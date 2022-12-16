@@ -3,7 +3,7 @@ Terraform Module to run an ec2 instance that is running Apache
 Not intended to be used in production
 
 ```hcl
-    terraform {
+terraform {
 
 }
 
