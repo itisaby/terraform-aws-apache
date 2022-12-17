@@ -56,24 +56,28 @@ data "template_file" "user_data" {
   template = file("${abspath(path.module)}/user-data.yml")
 }
 data "aws_ami" "amazon-linux-2" {
- most_recent = true
+  most_recent = true
 
- filter {
-   name   = "owner-alias"
-   values = ["amazon"]
- }
+  filter {
+    name   = "owner-alias"
+    values = ["amazon"]
+  }
 
 
- filter {
-   name   = "name"
-   values = ["amzn2-ami-hvm*"]
- }
- owners = [ "amazon" ]
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm*"]
+  }
+  owners = ["amazon"]
 }
 
+data "aws_subnet_ids" "subnet_id" {
+  vpc_id = data.aws_vpc.main.id
+}
 
 resource "aws_instance" "app_server" {
   ami                    = data.aws_ami.amazon-linux-2.id
+  subnet_id              = tolist(data.aws_subnet_ids.subnet_id.ids)[0]
   instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.sg_server.id]
   #   count         = 2
